@@ -1,0 +1,52 @@
+# On GKE, the driver has to be installed separately according to specific instructions.
+# See here: https://cloud.google.com/kubernetes-engine/docs/how-to/gpus#installing_drivers
+# See also a specific installation page on GKE here: https://cloud.google.com/kubernetes-engine/docs/how-to/gpu-operator
+#
+# These values validated on v24.6.1 of the NVIDIA GPU Operator.
+driver:
+  enabled: false
+toolkit:
+  enabled: true # standard GKE true
+  installDir: /home/kubernetes/bin/nvidia
+cdi:
+  enabled: true # standard GKE true
+  default: true
+nfd:
+  enabled: true
+gfd:
+  enabled: true
+migManager:
+  enabled: false
+devicePlugin:
+  enabled: true
+  config:
+    name: device-plugin-config
+    create: true
+    default: default
+    data:
+      default: |-
+        version: v1
+        flags:
+          migStrategy: none
+          failOnInitError: true
+      test-sharing: |-
+        version: v1
+        sharing:
+          timeSlicing:
+            renameByDefault: true
+            failRequestsGreaterThanOne: true
+            resources:
+            - name: nvidia.com/gpu
+              replicas: 4
+      test-mps: |-
+        version: v1
+        sharing:
+          mps:
+            renameByDefault: true
+            resources:
+            - name: nvidia.com/gpu
+              replicas: 2
+dcgmExporter:
+  enabled: true
+hostPaths:
+  driverInstallDir: /home/kubernetes/bin/nvidia

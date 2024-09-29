@@ -1,0 +1,28 @@
+gfd:
+  enabled: true
+
+# Label the node with `nvidia.com/device-plugin.config=<config_name>` to use a specific config.
+config:
+  map:
+    default: |-
+      version: v1
+      flags:
+        migStrategy: none
+        failOnInitError: true
+    test-sharing: |-
+      version: v1
+      sharing:
+        timeSlicing:
+          renameByDefault: true
+          failRequestsGreaterThanOne: true
+          resources:
+          - name: nvidia.com/gpu
+            replicas: 4
+    test-mps: |-
+      version: v1
+      sharing:
+        mps:
+          renameByDefault: false
+          resources:
+          - name: nvidia.com/gpu
+            replicas: 3

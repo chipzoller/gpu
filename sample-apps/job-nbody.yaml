@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nbody-job
+  namespace: cz-gpu-testing
+spec:
+  parallelism: 4
+  completions: 4
+  template:
+    spec:
+      hostPID: true # required for MPS mode
+      containers:
+        - name: nbody
+          image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+          # command: ["nbody"]
+          args: ["-benchmark", "-i=10000"]
+          resources:
+            limits:
+              # nvidia.com/gpu: 1
+              nvidia.com/gpu.shared: 1
+      restartPolicy: Never

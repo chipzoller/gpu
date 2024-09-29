@@ -1,0 +1,32 @@
+prometheus:
+  extraScrapeConfigs: |
+    - job_name: kubecost
+      honor_labels: true
+      scrape_interval: 1m
+      scrape_timeout: 60s
+      metrics_path: /metrics
+      scheme: http
+      dns_sd_configs:
+      - names:
+        - {{ template "cost-analyzer.serviceName" . }}
+        type: 'A'
+        port: 9003
+    - job_name: kubecost-networking
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+      # Scrape only the the targets matching the following metadata
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+          action: keep
+          regex:  kubecost
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          action: keep
+          regex:  network-costs
+    - job_name: kubecost-dcgm-exporter
+      kubernetes_sd_configs:
+        - role: pod
+      # Scrape only the the targets matching the following metadata
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+          action: keep
+          regex:  dcgm-exporter
