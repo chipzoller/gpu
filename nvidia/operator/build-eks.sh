@@ -31,8 +31,8 @@ fi
 # Provision EKS cluster
 replicated cluster create --distribution eks \
     --nodegroup instance-type=m6i.large,nodes=1,disk=50 \
-    --nodegroup instance-type=g4dn.xlarge,nodes=1,disk=50 \
-    --ttl 2h \
+    --nodegroup instance-type=g4dn.xlarge,nodes=1,disk=100 \
+    --ttl 4h \
     --version 1.29 \
     --name myeks01
 

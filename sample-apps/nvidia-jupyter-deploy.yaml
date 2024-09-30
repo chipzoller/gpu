@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nvidia-tf-notebook
+  namespace: gpu-testing
+spec:
+  selector:
+    matchLabels:
+      app: nvidia-tf-notebook
+  template:
+    metadata:
+      labels:
+        app: nvidia-tf-notebook
+    spec:
+      securityContext:
+        fsGroup: 0
+      containers:
+      - name: nvidia-tf-notebook
+        # this is a VERY large image (multi GB) and will take several minutes to pull
+        image: nvcr.io/nvidia/tensorflow:24.09-tf2-py3
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        # executes the specific notebook in headless mode
+        # to change to head mode to access in a browser interactively, use:
+        # jupyter notebook --notebook-dir=/workspace --ip=0.0.0.0 --no-browser --allow-root
+        command:
+          - jupyter
+          - execute
+          - /etc/config/notebook.ipynb
+        ports:
+        - containerPort: 8888
+          name: notebook
+        volumeMounts:
+        - name: notebook
+          mountPath: /etc/config
+        - name: empty
+          mountPath: /data
+      volumes:
+        - name: notebook
+          configMap:
+            name: notebook
+        - name: empty
+          emptyDir:
+            medium: Memory
