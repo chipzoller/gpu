@@ -1,21 +1,25 @@
+# N-Body simulation. See https://developer.nvidia.com/gpugems/gpugems3/part-v-physics-simulation/chapter-31-fast-n-body-simulation-cuda
+# -i flag (integer) for number of iterations.
+# -numdevices flag (integer) for number of GPUs to consume.
+# Pod completion will show benchmarks to stdout.
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: nbody-job
   namespace: cz-gpu-testing
 spec:
-  parallelism: 4
-  completions: 4
+  parallelism: 1
+  completions: 1
   template:
     spec:
-      hostPID: true # required for MPS mode
+      hostPID: false # required for MPS mode on GKE
       containers:
         - name: nbody
           image: nvcr.io/nvidia/k8s/cuda-sample:nbody
           # command: ["nbody"]
-          args: ["-benchmark", "-i=10000"]
+          args: ["-benchmark", "-numdevices=1", "-i=10000000000"]
           resources:
             limits:
-              # nvidia.com/gpu: 1
-              nvidia.com/gpu.shared: 1
+              nvidia.com/gpu: 2
+              # nvidia.com/gpu.shared: 1
       restartPolicy: Never

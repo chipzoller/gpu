@@ -1,3 +1,7 @@
+# N-Body simulation. See https://developer.nvidia.com/gpugems/gpugems3/part-v-physics-simulation/chapter-31-fast-n-body-simulation-cuda
+# -i flag (integer) for number of iterations.
+# -numdevices flag (integer) for number of GPUs to consume.
+# Pod completion will show benchmarks to stdout.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

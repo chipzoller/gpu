@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zero-gpu-ss
+  namespace: cz-gpu-testing
+spec:
+  selector:
+    matchLabels:
+      app: zerogpu
+  serviceName: zerogpu
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zerogpu
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: busybox
+        image: busybox:latest
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        command:
+          - sleep
+          - infinity
