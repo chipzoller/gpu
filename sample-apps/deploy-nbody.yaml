@@ -5,25 +5,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nbody
-  namespace: gputesting
+  name: falcon-ai
+  namespace: cz-gpu-testing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nbody
+      app: falcon-ai
   template:
     metadata:
       labels:
-        app: nbody
+        app: falcon-ai
     spec:
       # hostPID: true # required for MPS on GKE
       containers:
-        - name: nbody
+        - name: pytorch-ai
           image: nvcr.io/nvidia/k8s/cuda-sample:nbody
           # command: ["nbody"]
-          args: ["-benchmark", "-i=100000000"]
+          args: ["-benchmark", "-i=100000000", "-numdevices=1"]
           resources:
             limits:
-              nvidia.com/gpu: 1
+              nvidia.com/gpu: 2
               # nvidia.com/gpu.shared: 1
